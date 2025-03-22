@@ -19,6 +19,9 @@ function App() {
     expires_in: "",
   });
 
+  const [userdetails, setUserdetails] = useState([]);
+  const [usserhighestpost, setUserhighestpost] = useState([]);
+
   function handle(e) {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
   }
@@ -40,7 +43,7 @@ function App() {
     }
   }
 
-  async function fetch() {
+  async function token() {
     try {
       console.log(registerdetails);
       const response = await axios.post("http://20.244.56.144/test/auth", {
@@ -57,6 +60,39 @@ function App() {
       console.error("The issue with the registration details:", error.message);
     }
   }
+
+  const fetchfunction = async () => {
+    try {
+      const response = await axios.get("http://20.244.56.144/test/users", {
+        headers: {
+          Authorization: `${tokendetails.tokentype} ${tokendetails.access_token}`,
+        },
+      });
+      setUserdetails(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const userhigh = async () => {
+    userdetails.map((u) => {
+      try {
+        const res = axios.get(
+          `http://20.244.56.144/test/users/:${u.id}/posts`,
+          {
+            headers: {
+              Authorization: `${tokendetails.tokentype} ${tokendetails.access_token}`,
+            },
+          }
+        );
+        res.data.map((p) => {
+          setCount();
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
 
   async function login() {
     await register();

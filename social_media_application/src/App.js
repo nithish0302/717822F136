@@ -13,27 +13,50 @@ function App() {
     rollNo: "",
   });
 
+  const [tokendetails, settokendetails] = useState({
+    tokentype: "",
+    access_token: "",
+    expires_in: "",
+  });
+
   function handle(e) {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
   }
 
   async function register() {
     try {
-      const response = await axios.post("https://20.244.56.144/test/register", {
+      const response = await axios.post("http://20.244.56.144/test/register", {
         companyName: "goMart",
         ownerName: "Nithish P",
         rollNo: "717822F136",
-        ownerEmail: "nithish2005palani@gmail.com",
+        ownerEmail: "717822F36@kce.ac.in",
         accessCode: "GEVSsY",
       });
       console.log(response.data);
       setregisterdetails(response.data);
+      await fetch();
     } catch (error) {
       console.error("The issue with the registration details:", error.message);
     }
   }
 
-  async function fetch() {}
+  async function fetch() {
+    try {
+      console.log(registerdetails);
+      const response = await axios.post("http://20.244.56.144/test/auth", {
+        companyName: registerdetails.companyName,
+        clientID: registerdetails.clientID,
+        clientSecret: registerdetails.clientSecret,
+        ownerName: registerdetails.ownerName,
+        ownerEmail: registerdetails.ownerEmail,
+        rollNo: registerdetails.rollNo,
+      });
+      console.log(response.data);
+      settokendetails(response.data);
+    } catch (error) {
+      console.error("The issue with the registration details:", error.message);
+    }
+  }
 
   async function login() {
     await register();
